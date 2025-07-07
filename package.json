@@ -1,0 +1,35 @@
+{
+  "name": "flowpress",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "module",
+  "scripts": {
+    "dev": "npx ts-node-dev --clear --respawn --transpile-only src/test/index.ts",
+    "start": "node dist/index.js",
+    "test": "node dist/test/index.js",
+    "build": "tsc"
+  },
+  "keywords": ["framework", "express", "typescript"],
+  "author": "Luan Gabriel da Silva",
+  "license": "MIT",
+  "description": "Microframework minimalista para APIs",
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.0.10",
+    "chalk": "^5.4.1",
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.10",
+    "reflect-metadata": "^0.2.2",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0"
+  },
+  "peerDependencies": {
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "reflect-metadata": "^0.2.2"
+  }
+}

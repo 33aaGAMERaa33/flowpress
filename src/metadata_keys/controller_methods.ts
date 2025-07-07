@@ -1,0 +1,1 @@
+export const CONTROLLER_METHODS_METADATA_KEY = "methods";

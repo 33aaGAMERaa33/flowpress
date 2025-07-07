@@ -1,0 +1,1 @@
+export const ENV_INJECT_METADATA_KEY = "env-inject";
