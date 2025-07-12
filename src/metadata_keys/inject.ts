@@ -1,1 +1,0 @@
-export const INJECT_METADATA_KEY = "inject";

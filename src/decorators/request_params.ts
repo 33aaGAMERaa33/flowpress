@@ -1,26 +1,26 @@
 import { RequestParam } from "../enums/request_param";
 
-export type RequestParamDefine = [RequestParam, number];
+export type RequestParamBinding = [RequestParam, number];
 
-function createRequestParam(requestParam: RequestParam): ParameterDecorator {
+function createRequestParamDecorator(requestParam: RequestParam): ParameterDecorator {
     return function(target, propertyKey, parameterIndex) {
         // Caso propertyKey seja nulo, significa que a anotação foi feita em um parametro do construtor
         if(propertyKey === undefined) return;
 
         // Pega os parametros de requisição antes guardados
-        const requestParams: Record<string | symbol, RequestParamDefine[]> = Reflect.getMetadata(RequestParam.all, target.constructor) ?? {};
+        const methodParamsMetadata: Record<string | symbol, RequestParamBinding[]> = Reflect.getMetadata(RequestParam.MetadataKey, target.constructor) ?? {};
 
         // Cria uma lista caso não tenha
-        requestParams[propertyKey] ??= [];
+        methodParamsMetadata[propertyKey] ??= [];
 
         // Adiciona o parametro de requisição requerido
-        requestParams[propertyKey].push([requestParam, parameterIndex]);
+        methodParamsMetadata[propertyKey].push([requestParam, parameterIndex]);
 
         // Guarda no construtor via metadados
-        Reflect.defineMetadata(RequestParam.all, requestParams, target.constructor);
+        Reflect.defineMetadata(RequestParam.MetadataKey, methodParamsMetadata, target.constructor);
     }
 }
 
-export const Headers = () => createRequestParam(RequestParam.headers);
-export const Body = () => createRequestParam(RequestParam.body);
-export const Query = () => createRequestParam(RequestParam.query);
+export const Body = () => createRequestParamDecorator(RequestParam.body);
+export const Query = () => createRequestParamDecorator(RequestParam.query);
+export const Headers = () => createRequestParamDecorator(RequestParam.headers);

@@ -1,5 +1,3 @@
-import { InstanceImpl } from "./instance.impl";
-
-export interface MiddlawareImpl extends InstanceImpl {
-    handler(...args: any[]): any;
+export interface MiddlawareImpl {
+    handler(req: Request, res: Response, next: () => void): Promise<void> | void;
 }

@@ -1,13 +1,20 @@
 import { ClassConstructor } from "../defines/class_constructor";
-import { InstanceImpl } from "../interfaces/instance.impl";
-import { MIDDLAWARE_METADATA_KEY } from "../metadata_keys/middalware";
+import { InstanceImplicitImpl } from "../interfaces/instance.implicit.impl";
+import { MIDDLAWARE_METADATA_KEY } from "../constants/metadata_keys/middalware";
+import { ORIGINAL_CONSTRUCTOR_METADATA_KEY } from "../constants/metadata_keys/original-constructor";
+import { MiddlawareImpl } from "../interfaces/middlaware.impl";
 
-export function Middalware() {
-    return function<T extends ClassConstructor>(constructor: T) {
-        Reflect.defineMetadata(MIDDLAWARE_METADATA_KEY, true, constructor);
+export function Middalware<T extends ClassConstructor<MiddlawareImpl>>(constructor: T): T{
+    const originalConstructor = Reflect.getMetadata(ORIGINAL_CONSTRUCTOR_METADATA_KEY, constructor) ?? constructor;
 
-        return class extends constructor implements InstanceImpl {
-            readonly __constructor: ClassConstructor = constructor;
-        }
-    }
+    Reflect.defineMetadata(MIDDLAWARE_METADATA_KEY, true, originalConstructor);
+    
+    const newConstructor = class extends constructor implements InstanceImplicitImpl {
+        readonly __originalConstructor: ClassConstructor = originalConstructor;
+    };
+
+    // Guarda o construtor original em metadados no novo construtor
+    Reflect.defineMetadata(ORIGINAL_CONSTRUCTOR_METADATA_KEY, originalConstructor, newConstructor);
+
+    return newConstructor;
 }

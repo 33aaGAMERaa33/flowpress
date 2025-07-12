@@ -1,29 +1,29 @@
 import { ClassConstructor } from "../defines/class_constructor";
-import { ControllerImpl } from "../interfaces/controller.impl";
-import { CONTROLLER_METADATA_KEY } from "../metadata_keys/controller";
-import { CONTROLLER_METHODS_METADATA_KEY } from "../metadata_keys/controller_methods";
-import { Route } from "../models/route";
+import { ControllerImplicitImpl } from "../interfaces/controller.implicit.impl";
+import { CONTROLLER_METADATA_KEY } from "../constants/metadata_keys/controller";
+import { CONTROLLER_METHODS_METADATA_KEY } from "../constants/metadata_keys/controller_methods";
 import { MethodDefine } from "./method";
+import { ORIGINAL_CONSTRUCTOR_METADATA_KEY } from "../constants/metadata_keys/original-constructor";
+import { Route } from "../models/route";
 
-export function Controller(controller?: string) {
+export function Controller() {
     return function<T extends ClassConstructor>(constructor: T) {
+        // Pega o construtor original guardado caso houver
+        const originalConstructor = Reflect.getMetadata(ORIGINAL_CONSTRUCTOR_METADATA_KEY, constructor) ?? constructor;
+
         const routes: Route[] = [];
         // Pega os metodos de rota antes definidos pelo decorador @Method 
-        const methodsDefine: MethodDefine[] = Reflect.getMetadata(CONTROLLER_METHODS_METADATA_KEY, constructor.prototype) ?? [];
-
-        // Função para formatar o caminho
-        function adaptPath(path?: string) {
-            return `${path ? `/${path}` : ""}`;
-        }
+        const methodsDefine: MethodDefine[] = Reflect.getMetadata(CONTROLLER_METHODS_METADATA_KEY, originalConstructor) ?? [];
         
         // Intera sobre os methodsDefine para instanciar as rotas
         for(const [propertyKey, httpMethod, path] of methodsDefine) {
             // Formata o caminho adicionando junto o controlador como prefixo
-            const newPath = `${adaptPath(controller)}${adaptPath(path)}`;
+            const tempPath = `${path ? path : ""}`;
+            const newPath = tempPath.startsWith("/") ? tempPath : `/${tempPath}`;
 
             // Procura outra rota igual, se achar gera um erro em tempo de execução
             if(routes.find((otherRoute) => otherRoute.path === newPath && otherRoute.method === httpMethod))
-                throw new Error(`Rotas duplicadas em ${constructor.name} para ${path} via ${httpMethod}`);
+                throw new Error(`Rotas duplicadas em ${originalConstructor.name} para ${path} via ${httpMethod}`);
 
             // Adiciona a rota com um handler predefinido que caso seja chamado antes de ser vinculado a instancia vai gerar um erro
             routes.push(new Route({
@@ -37,13 +37,12 @@ export function Controller(controller?: string) {
         }
 
         // Define que a classe é um controlador
-        Reflect.defineMetadata(CONTROLLER_METADATA_KEY, true, constructor);
+        Reflect.defineMetadata(CONTROLLER_METADATA_KEY, true, originalConstructor);
 
         // Implementa implicitamente ControllerImpl para guardar valores essenciais
-        return class extends constructor implements ControllerImpl {
+        const newConstructor = class extends constructor implements ControllerImplicitImpl {
             readonly __routes: Route[] = [];
-            readonly __constructor: ClassConstructor = constructor;
-            readonly __controller?: string | undefined = controller;
+            readonly __originalConstructor: ClassConstructor = originalConstructor;
 
             constructor(...args: any[]) {
                 super(...args);
@@ -62,6 +61,12 @@ export function Controller(controller?: string) {
                     this.__routes.push(newRoute);
                 });
             }
-        }
+        };
+
+        // Guarda o construtor original
+        Reflect.defineMetadata(ORIGINAL_CONSTRUCTOR_METADATA_KEY, originalConstructor, newConstructor);
+
+        // Retorna o novo construtor
+        return newConstructor;
     }
 }

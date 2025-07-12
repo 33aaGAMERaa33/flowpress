@@ -1,5 +1,5 @@
 export enum RequestParam {
-    all = "all",
+    MetadataKey = "all",
     headers = "headers",
     query = "query",
     body = "body",
