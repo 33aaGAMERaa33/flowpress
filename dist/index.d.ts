@@ -1,4 +1,3 @@
-// Exportando decoradores
 export { AppConfig } from "./decorators/app_config";
 export { EnvProperty, envApplyProperties } from "./decorators/env_getter";
 export { Controller } from "./decorators/controller";
@@ -11,15 +10,10 @@ export { Body, Headers, Query } from "./decorators/request_params";
 export { UseMiddlaware } from "./decorators/use_middlaware";
 export { Module } from "./decorators/module";
 export { DataSourceConfig } from "./decorators/database_config";
-// Exportando enums
 export { HttpMethod, } from "./enums/http_method";
 export { HttpStatus, } from "./enums/http_status";
-// Exportando exceções
 export { HttpException, } from "./exceptions/http_exception";
-// Exportando modelos
 export { Route, } from "./models/route";
 export { Flowpress } from "./models/flowpress";
-// Exportando interfaces
 export { DatabaseConfigImpl } from "./interfaces/database_config.impl";
-// Exportando definições
 export { ClassConstructor } from "./defines/class_constructor";
