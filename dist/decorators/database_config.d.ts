@@ -11,6 +11,6 @@ export declare function DataSourceConfig<T extends ClassConstructor<DatabaseConf
         database: string;
         synchronize?: boolean;
         logging?: boolean;
-        entities: ClassConstructor[];
+        entities: Object[];
     };
 } & T;

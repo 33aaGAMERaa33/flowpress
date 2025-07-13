@@ -1,5 +1,3 @@
-import { ClassConstructor } from "../defines/class_constructor";
-
 export interface DatabaseConfigImpl {
     type: string,
     host: string,
@@ -9,5 +7,5 @@ export interface DatabaseConfigImpl {
     database: string,
     synchronize?: boolean,
     logging?: boolean,
-    entities: ClassConstructor[],
+    entities: Object[],
 }
