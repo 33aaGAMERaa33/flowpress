@@ -51,20 +51,22 @@ export class Flowpress {
 
                     const methodParams = methodsParamsMetadata[route.propertyKey];
 
-                    for(const [requestParam, parameterIndex] of methodParams) {
-                        switch(requestParam) {
-                            case RequestParam.headers:
-                                args[parameterIndex] = req.headers;
-                                break;
-                            case RequestParam.query:
-                                args[parameterIndex] = parsedUrl.query;
-                                break;
-                            case RequestParam.body:
-                                try {
-                                    args[parameterIndex] = await this.parseRequestBody(req);
-                                }catch(_) {}
-                                
-                                break;
+                    if(methodParams !== undefined) {
+                        for(const [requestParam, parameterIndex] of methodParams) {
+                            switch(requestParam) {
+                                case RequestParam.headers:
+                                    args[parameterIndex] = req.headers;
+                                    break;
+                                case RequestParam.query:
+                                    args[parameterIndex] = parsedUrl.query;
+                                    break;
+                                case RequestParam.body:
+                                    try {
+                                        args[parameterIndex] = await this.parseRequestBody(req);
+                                    }catch(_) {}
+                                    
+                                    break;
+                            }
                         }
                     }
 
