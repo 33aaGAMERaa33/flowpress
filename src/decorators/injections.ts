@@ -1,5 +1,4 @@
 import { FIELDS_TO_INJECT_METADATA_KEY } from "../constants/metadata_keys/fields_to_inject";
-import { ClassConstructor } from "../defines/class_constructor";
 import { InjectionType } from "../enums/injection_type.enum";
 
 export type InjectDefine = [InjectionType, string | symbol, any];
@@ -21,4 +20,4 @@ export const Inject = (): PropertyDecorator =>
     (target, propertyKey) =>
         createInjectDecorator(InjectionType.injectable, Reflect.getMetadata("design:type", target, propertyKey))(target, propertyKey);
 
-export const InjectRepository = (entity: ClassConstructor): PropertyDecorator => createInjectDecorator(InjectionType.repository, entity);
+export const InjectRepository = (entity: Object): PropertyDecorator => createInjectDecorator(InjectionType.repository, entity);
