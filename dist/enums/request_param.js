@@ -4,6 +4,7 @@ exports.RequestParam = void 0;
 var RequestParam;
 (function (RequestParam) {
     RequestParam["MetadataKey"] = "all";
+    RequestParam["response"] = "response";
     RequestParam["headers"] = "headers";
     RequestParam["query"] = "query";
     RequestParam["body"] = "body";

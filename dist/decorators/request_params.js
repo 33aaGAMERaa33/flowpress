@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Headers = exports.Query = exports.Body = void 0;
+exports.Headers = exports.Res = exports.Query = exports.Body = void 0;
 const request_param_1 = require("../enums/request_param");
 function createRequestParamDecorator(requestParam) {
     return function (target, propertyKey, parameterIndex) {
@@ -21,5 +21,7 @@ const Body = () => createRequestParamDecorator(request_param_1.RequestParam.body
 exports.Body = Body;
 const Query = () => createRequestParamDecorator(request_param_1.RequestParam.query);
 exports.Query = Query;
+const Res = () => createRequestParamDecorator(request_param_1.RequestParam.response);
+exports.Res = Res;
 const Headers = () => createRequestParamDecorator(request_param_1.RequestParam.headers);
 exports.Headers = Headers;

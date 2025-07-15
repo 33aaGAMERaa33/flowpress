@@ -23,4 +23,5 @@ function createRequestParamDecorator(requestParam: RequestParam): ParameterDecor
 
 export const Body = () => createRequestParamDecorator(RequestParam.body);
 export const Query = () => createRequestParamDecorator(RequestParam.query);
+export const Res = () => createRequestParamDecorator(RequestParam.response);
 export const Headers = () => createRequestParamDecorator(RequestParam.headers);

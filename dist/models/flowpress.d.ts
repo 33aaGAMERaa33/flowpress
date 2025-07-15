@@ -4,5 +4,6 @@ export declare class Flowpress {
     get port(): number;
     private getRouteHandler;
     static start(app: any): Promise<Flowpress>;
+    private static parseContent;
     private static parseRequestBody;
 }

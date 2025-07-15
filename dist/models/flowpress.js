@@ -9,6 +9,8 @@ const http_exception_1 = require("../exceptions/http_exception");
 const http_1 = __importDefault(require("http"));
 const url_1 = __importDefault(require("url"));
 const request_param_1 = require("../enums/request_param");
+const response_1 = require("./response");
+const http_status_1 = require("../enums/http_status");
 class Flowpress {
     app;
     constructor(app) {
@@ -37,13 +39,16 @@ class Flowpress {
             const [controller, route] = flowpress.getRouteHandler(parsedUrl, req.method) ?? [];
             if (controller !== undefined && route !== undefined) {
                 try {
-                    let response;
                     const args = [];
                     const methodsParamsMetadata = Reflect.getMetadata(request_param_1.RequestParam.MetadataKey, controller.__originalConstructor) ?? {};
                     const methodParams = methodsParamsMetadata[route.propertyKey];
+                    const response = new response_1.Response();
                     if (methodParams !== undefined) {
                         for (const [requestParam, parameterIndex] of methodParams) {
                             switch (requestParam) {
+                                case request_param_1.RequestParam.response:
+                                    args[parameterIndex] = response;
+                                    break;
                                 case request_param_1.RequestParam.headers:
                                     args[parameterIndex] = req.headers;
                                     break;
@@ -60,32 +65,32 @@ class Flowpress {
                         }
                     }
                     const handlerResult = await route.handler(...args);
-                    const headers = {};
-                    if (typeof handlerResult !== "object") {
-                        response = handlerResult;
-                        headers["Content-Type"] = "text/plain";
+                    let responseData = response.getData();
+                    if (responseData !== undefined) {
+                        const [header, content] = this.parseContent(responseData);
+                        response.setHeader("Content-Type", header);
+                        response.setData(content);
+                    }
+                    else if (handlerResult !== undefined) {
+                        const [header, content] = this.parseContent(handlerResult);
+                        response.setHeader("Content-Type", header);
+                        response.setData(content);
                     }
                     else {
-                        response = JSON.stringify(handlerResult);
-                        headers["Content-Type"] = "application/json";
+                        response.setStatusCode(http_status_1.HttpStatus.NoContent);
                     }
-                    res.writeHead(200, headers);
-                    res.end(response);
+                    response.setHeader("Content-Length", Buffer.byteLength(response.getData()));
+                    res.writeHead(response.getStatusCode(), response.getHeaders());
+                    res.end(response.getData());
                 }
                 catch (e) {
                     if (e instanceof http_exception_1.HttpException) {
-                        let response = undefined;
-                        const headers = {};
-                        if (typeof e.message !== "object") {
-                            headers["content-type"] = "text/plain";
-                            response = e.message;
-                        }
-                        else {
-                            headers["content-type"] = "application/json";
-                            response = JSON.stringify(e.message);
-                        }
-                        res.writeHead(e.status, headers);
-                        res.end(response);
+                        const [header, content] = this.parseContent(e.message);
+                        res.writeHead(e.status, {
+                            "Content-Type": header,
+                            "Content-Length": Buffer.byteLength(content),
+                        });
+                        res.end(content);
                     }
                     else {
                         throw e;
@@ -98,6 +103,19 @@ class Flowpress {
             }
         });
         return await new Promise((resolve) => server.listen(appInstance.__port, () => resolve(flowpress)));
+    }
+    static parseContent(content) {
+        let header;
+        let response;
+        if (typeof content !== "object") {
+            header = "text/plain; charset=utf-8";
+            response = String(content);
+        }
+        else {
+            header = "application/json; charset=utf-8";
+            response = JSON.stringify(content);
+        }
+        return [header, response];
     }
     static async parseRequestBody(req) {
         return new Promise((resolve, reject) => {
