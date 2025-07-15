@@ -19,6 +19,7 @@ export { HttpException, } from "./exceptions/http_exception";
 // Exportando modelos
 export { Route, } from "./models/route";
 export { Flowpress } from "./models/flowpress";
+export { ResponseData } from "./models/response_data";
 // Exportando interfaces
 export { DatabaseConfigImpl } from "./interfaces/database_config.impl";
 // Exportando definições

@@ -15,5 +15,6 @@ export { HttpStatus, } from "./enums/http_status";
 export { HttpException, } from "./exceptions/http_exception";
 export { Route, } from "./models/route";
 export { Flowpress } from "./models/flowpress";
+export { ResponseData } from "./models/response_data";
 export { DatabaseConfigImpl } from "./interfaces/database_config.impl";
 export { ClassConstructor } from "./defines/class_constructor";

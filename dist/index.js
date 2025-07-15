@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Flowpress = exports.Route = exports.HttpException = exports.HttpStatus = exports.HttpMethod = exports.DataSourceConfig = exports.Module = exports.UseMiddlaware = exports.Res = exports.Query = exports.Headers = exports.Body = exports.Middalware = exports.Method = exports.InjectionUser = exports.Injectable = exports.Inject = exports.InjectRepository = exports.Controller = exports.envApplyProperties = exports.EnvProperty = exports.AppConfig = void 0;
+exports.ResponseData = exports.Flowpress = exports.Route = exports.HttpException = exports.HttpStatus = exports.HttpMethod = exports.DataSourceConfig = exports.Module = exports.UseMiddlaware = exports.Res = exports.Query = exports.Headers = exports.Body = exports.Middalware = exports.Method = exports.InjectionUser = exports.Injectable = exports.Inject = exports.InjectRepository = exports.Controller = exports.envApplyProperties = exports.EnvProperty = exports.AppConfig = void 0;
 // Exportando decoradores
 var app_config_1 = require("./decorators/app_config");
 Object.defineProperty(exports, "AppConfig", { enumerable: true, get: function () { return app_config_1.AppConfig; } });
@@ -44,3 +44,5 @@ var route_1 = require("./models/route");
 Object.defineProperty(exports, "Route", { enumerable: true, get: function () { return route_1.Route; } });
 var flowpress_1 = require("./models/flowpress");
 Object.defineProperty(exports, "Flowpress", { enumerable: true, get: function () { return flowpress_1.Flowpress; } });
+var response_data_1 = require("./models/response_data");
+Object.defineProperty(exports, "ResponseData", { enumerable: true, get: function () { return response_data_1.ResponseData; } });

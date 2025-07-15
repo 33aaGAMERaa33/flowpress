@@ -8,7 +8,7 @@ import { RequestParam } from "../enums/request_param";
 import { ControllerImplicitImpl } from "../interfaces/controller.implicit.impl";
 import { Route } from "./route";
 import { HttpMethod } from "../enums/http_method";
-import { Response } from "./response";
+import { ResponseData } from "./response_data";
 import { HttpStatus } from "../enums/http_status";
 
 export class Flowpress {
@@ -51,7 +51,7 @@ export class Flowpress {
                     const methodsParamsMetadata: Record<string | symbol, RequestParamBinding[]> = Reflect.getMetadata(RequestParam.MetadataKey, controller.__originalConstructor) ?? {};
 
                     const methodParams = methodsParamsMetadata[route.propertyKey];
-                    const response = new Response();
+                    const response = new ResponseData();
 
                     if(methodParams !== undefined) {
                         for(const [requestParam, parameterIndex] of methodParams) {

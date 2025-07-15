@@ -9,7 +9,7 @@ const http_exception_1 = require("../exceptions/http_exception");
 const http_1 = __importDefault(require("http"));
 const url_1 = __importDefault(require("url"));
 const request_param_1 = require("../enums/request_param");
-const response_1 = require("./response");
+const response_data_1 = require("./response_data");
 const http_status_1 = require("../enums/http_status");
 class Flowpress {
     app;
@@ -42,7 +42,7 @@ class Flowpress {
                     const args = [];
                     const methodsParamsMetadata = Reflect.getMetadata(request_param_1.RequestParam.MetadataKey, controller.__originalConstructor) ?? {};
                     const methodParams = methodsParamsMetadata[route.propertyKey];
-                    const response = new response_1.Response();
+                    const response = new response_data_1.ResponseData();
                     if (methodParams !== undefined) {
                         for (const [requestParam, parameterIndex] of methodParams) {
                             switch (requestParam) {
