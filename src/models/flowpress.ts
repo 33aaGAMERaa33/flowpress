@@ -7,6 +7,7 @@ import { RequestParamBinding } from "../decorators/request_params";
 import { RequestParam } from "../enums/request_param";
 import { ControllerImplicitImpl } from "../interfaces/controller.implicit.impl";
 import { Route } from "./route";
+import { HttpMethod } from "../enums/http_method";
 
 export class Flowpress {
     private readonly app: AppImplicitImpl;
@@ -19,10 +20,10 @@ export class Flowpress {
         return this.app.__port;
     }
 
-    private getRouteHandler(parsedUrl: url.UrlWithParsedQuery): void | [ControllerImplicitImpl, Route] {
+    private getRouteHandler(parsedUrl: url.UrlWithParsedQuery, method: HttpMethod): void | [ControllerImplicitImpl, Route] {
         for(const controller of this.app.__controllers) {
             for(const route of controller.__routes) {
-                if(route.path === parsedUrl.pathname) {
+                if(route.path === parsedUrl.pathname && route.method === method) {
                     return [controller, route];
                 }
             }
@@ -39,32 +40,31 @@ export class Flowpress {
 
         const server = http.createServer(async (req, res) => {
             const parsedUrl = url.parse(req.url ?? "", true);
-            const [controller, route] = flowpress.getRouteHandler(parsedUrl) ?? [];
+            const [controller, route] = flowpress.getRouteHandler(parsedUrl, req.method! as HttpMethod) ?? [];
 
-            if(controller && route !== undefined) {
+            if(controller !== undefined && route !== undefined) {
                 try {
                     let response;
                     const args: any[] = [];
 
                     const methodsParamsMetadata: Record<string | symbol, RequestParamBinding[]> = Reflect.getMetadata(RequestParam.MetadataKey, controller.__originalConstructor) ?? {};
 
-                    for(const propertyKey in methodsParamsMetadata) {
-                        const methodParams =  methodsParamsMetadata[propertyKey];
+                    const methodParams = methodsParamsMetadata[route.propertyKey];
 
-                        for(const [requestParam, parameterIndex] of methodParams) {
-                            switch(requestParam) {
-                                case RequestParam.headers:
-                                    args[parameterIndex] = req.headers;
-                                    break;
-                                case RequestParam.query:
-                                    args[parameterIndex] = parsedUrl.query;
-                                    break;
-                                case RequestParam.body:
-                                    try {
-                                        args[parameterIndex] = await this.parseRequestBody(req);
-                                    }catch(_) {}
-                                    break;
-                            }
+                    for(const [requestParam, parameterIndex] of methodParams) {
+                        switch(requestParam) {
+                            case RequestParam.headers:
+                                args[parameterIndex] = req.headers;
+                                break;
+                            case RequestParam.query:
+                                args[parameterIndex] = parsedUrl.query;
+                                break;
+                            case RequestParam.body:
+                                try {
+                                    args[parameterIndex] = await this.parseRequestBody(req);
+                                }catch(_) {}
+                                
+                                break;
                         }
                     }
 
@@ -113,7 +113,10 @@ export class Flowpress {
         return new Promise((resolve, reject) => {
             let body = '';
 
-            req.on('data', chunk => (body += chunk));
+            req.on('data', chunk => {
+                body += chunk;
+            });
+
             req.on('end', () => {
                 try {
                     resolve(JSON.parse(body));
@@ -121,7 +124,11 @@ export class Flowpress {
                     reject(err);
                 }
             });
-            req.on('error', reject);
+
+            req.on('error', err => {
+                reject(err);
+            });
         });
     }
+
 }
