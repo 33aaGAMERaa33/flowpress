@@ -17,10 +17,10 @@ class Flowpress {
     get port() {
         return this.app.__port;
     }
-    getRouteHandler(parsedUrl) {
+    getRouteHandler(parsedUrl, method) {
         for (const controller of this.app.__controllers) {
             for (const route of controller.__routes) {
-                if (route.path === parsedUrl.pathname) {
+                if (route.path === parsedUrl.pathname && route.method === method) {
                     return [controller, route];
                 }
             }
@@ -34,29 +34,27 @@ class Flowpress {
         const flowpress = new Flowpress(app);
         const server = http_1.default.createServer(async (req, res) => {
             const parsedUrl = url_1.default.parse(req.url ?? "", true);
-            const [controller, route] = flowpress.getRouteHandler(parsedUrl) ?? [];
-            if (controller && route !== undefined) {
+            const [controller, route] = flowpress.getRouteHandler(parsedUrl, req.method) ?? [];
+            if (controller !== undefined && route !== undefined) {
                 try {
                     let response;
                     const args = [];
                     const methodsParamsMetadata = Reflect.getMetadata(request_param_1.RequestParam.MetadataKey, controller.__originalConstructor) ?? {};
-                    for (const propertyKey in methodsParamsMetadata) {
-                        const methodParams = methodsParamsMetadata[propertyKey];
-                        for (const [requestParam, parameterIndex] of methodParams) {
-                            switch (requestParam) {
-                                case request_param_1.RequestParam.headers:
-                                    args[parameterIndex] = req.headers;
-                                    break;
-                                case request_param_1.RequestParam.query:
-                                    args[parameterIndex] = parsedUrl.query;
-                                    break;
-                                case request_param_1.RequestParam.body:
-                                    try {
-                                        args[parameterIndex] = await this.parseRequestBody(req);
-                                    }
-                                    catch (_) { }
-                                    break;
-                            }
+                    const methodParams = methodsParamsMetadata[route.propertyKey];
+                    for (const [requestParam, parameterIndex] of methodParams) {
+                        switch (requestParam) {
+                            case request_param_1.RequestParam.headers:
+                                args[parameterIndex] = req.headers;
+                                break;
+                            case request_param_1.RequestParam.query:
+                                args[parameterIndex] = parsedUrl.query;
+                                break;
+                            case request_param_1.RequestParam.body:
+                                try {
+                                    args[parameterIndex] = await this.parseRequestBody(req);
+                                }
+                                catch (_) { }
+                                break;
                         }
                     }
                     const handlerResult = await route.handler(...args);
@@ -102,7 +100,9 @@ class Flowpress {
     static async parseRequestBody(req) {
         return new Promise((resolve, reject) => {
             let body = '';
-            req.on('data', chunk => (body += chunk));
+            req.on('data', chunk => {
+                body += chunk;
+            });
             req.on('end', () => {
                 try {
                     resolve(JSON.parse(body));
@@ -111,7 +111,9 @@ class Flowpress {
                     reject(err);
                 }
             });
-            req.on('error', reject);
+            req.on('error', err => {
+                reject(err);
+            });
         });
     }
 }
