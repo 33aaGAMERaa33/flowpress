@@ -41,20 +41,22 @@ class Flowpress {
                     const args = [];
                     const methodsParamsMetadata = Reflect.getMetadata(request_param_1.RequestParam.MetadataKey, controller.__originalConstructor) ?? {};
                     const methodParams = methodsParamsMetadata[route.propertyKey];
-                    for (const [requestParam, parameterIndex] of methodParams) {
-                        switch (requestParam) {
-                            case request_param_1.RequestParam.headers:
-                                args[parameterIndex] = req.headers;
-                                break;
-                            case request_param_1.RequestParam.query:
-                                args[parameterIndex] = parsedUrl.query;
-                                break;
-                            case request_param_1.RequestParam.body:
-                                try {
-                                    args[parameterIndex] = await this.parseRequestBody(req);
-                                }
-                                catch (_) { }
-                                break;
+                    if (methodParams !== undefined) {
+                        for (const [requestParam, parameterIndex] of methodParams) {
+                            switch (requestParam) {
+                                case request_param_1.RequestParam.headers:
+                                    args[parameterIndex] = req.headers;
+                                    break;
+                                case request_param_1.RequestParam.query:
+                                    args[parameterIndex] = parsedUrl.query;
+                                    break;
+                                case request_param_1.RequestParam.body:
+                                    try {
+                                        args[parameterIndex] = await this.parseRequestBody(req);
+                                    }
+                                    catch (_) { }
+                                    break;
+                            }
                         }
                     }
                     const handlerResult = await route.handler(...args);
