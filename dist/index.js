@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ResponseData = exports.Flowpress = exports.Route = exports.HttpException = exports.HttpStatus = exports.HttpMethod = exports.DataSourceConfig = exports.Module = exports.UseMiddlaware = exports.Res = exports.Query = exports.Headers = exports.Body = exports.Middalware = exports.Method = exports.InjectionUser = exports.Injectable = exports.Inject = exports.InjectRepository = exports.Controller = exports.envApplyProperties = exports.EnvProperty = exports.AppConfig = void 0;
+exports.MiddlewaresDataContainer = exports.MiddlewareData = exports.ResponseData = exports.Flowpress = exports.Route = exports.HttpException = exports.HttpStatus = exports.HttpMethod = exports.DataSourceConfig = exports.Module = exports.UseMiddleware = exports.MiddlewaresData = exports.Res = exports.Query = exports.Headers = exports.Body = exports.Middelware = exports.Method = exports.InjectionUser = exports.Injectable = exports.Inject = exports.InjectRepository = exports.Controller = exports.envApplyProperties = exports.EnvProperty = exports.AppConfig = void 0;
 // Exportando decoradores
 var app_config_1 = require("./decorators/app_config");
 Object.defineProperty(exports, "AppConfig", { enumerable: true, get: function () { return app_config_1.AppConfig; } });
@@ -19,14 +19,15 @@ Object.defineProperty(exports, "InjectionUser", { enumerable: true, get: functio
 var method_1 = require("./decorators/method");
 Object.defineProperty(exports, "Method", { enumerable: true, get: function () { return method_1.Method; } });
 var middleware_1 = require("./decorators/middleware");
-Object.defineProperty(exports, "Middalware", { enumerable: true, get: function () { return middleware_1.Middelware; } });
+Object.defineProperty(exports, "Middelware", { enumerable: true, get: function () { return middleware_1.Middelware; } });
 var request_params_1 = require("./decorators/request_params");
 Object.defineProperty(exports, "Body", { enumerable: true, get: function () { return request_params_1.Body; } });
 Object.defineProperty(exports, "Headers", { enumerable: true, get: function () { return request_params_1.Headers; } });
 Object.defineProperty(exports, "Query", { enumerable: true, get: function () { return request_params_1.Query; } });
 Object.defineProperty(exports, "Res", { enumerable: true, get: function () { return request_params_1.Res; } });
+Object.defineProperty(exports, "MiddlewaresData", { enumerable: true, get: function () { return request_params_1.MiddlewaresData; } });
 var use_middleware_1 = require("./decorators/use_middleware");
-Object.defineProperty(exports, "UseMiddlaware", { enumerable: true, get: function () { return use_middleware_1.UseMiddleware; } });
+Object.defineProperty(exports, "UseMiddleware", { enumerable: true, get: function () { return use_middleware_1.UseMiddleware; } });
 var module_1 = require("./decorators/module");
 Object.defineProperty(exports, "Module", { enumerable: true, get: function () { return module_1.Module; } });
 var database_config_1 = require("./decorators/database_config");
@@ -46,3 +47,7 @@ var flowpress_1 = require("./models/flowpress");
 Object.defineProperty(exports, "Flowpress", { enumerable: true, get: function () { return flowpress_1.Flowpress; } });
 var response_data_1 = require("./models/response_data");
 Object.defineProperty(exports, "ResponseData", { enumerable: true, get: function () { return response_data_1.ResponseData; } });
+var middleware_data_1 = require("./models/middleware_data");
+Object.defineProperty(exports, "MiddlewareData", { enumerable: true, get: function () { return middleware_data_1.MiddlewareData; } });
+var middlawares_data_1 = require("./models/middlawares_data");
+Object.defineProperty(exports, "MiddlewaresDataContainer", { enumerable: true, get: function () { return middlawares_data_1.MiddlewaresDataContainer; } });

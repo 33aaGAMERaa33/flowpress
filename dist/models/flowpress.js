@@ -11,9 +11,9 @@ const url_1 = __importDefault(require("url"));
 const response_data_1 = require("./response_data");
 const http_status_1 = require("../enums/http_status");
 const middlawares_data_1 = require("./middlawares_data");
-const router_resolver_1 = require("../services/router_resolver");
-const middleware_runner_1 = require("../services/middleware_runner");
-const args_builder_1 = require("../services/args_builder");
+const router_resolver_1 = require("./helpers/router_resolver");
+const middleware_runner_1 = require("./helpers/middleware_runner");
+const args_builder_1 = require("./helpers/args_builder");
 class Flowpress {
     app;
     constructor(app) {

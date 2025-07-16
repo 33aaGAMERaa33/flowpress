@@ -6,7 +6,7 @@ const injectable_1 = require("../constants/metadata_keys/injectable");
 const module_1 = require("../constants/metadata_keys/module");
 const original_constructor_1 = require("../constants/metadata_keys/original-constructor");
 const app_declaration_service_1 = require("../services/app_declaration.service");
-const solve_injections_1 = require("../services/solve_injections");
+const solve_injections_1 = require("../models/helpers/solve_injections");
 function Module(data) {
     return function (constructor) {
         // Pega o construtor original guardado caso houver
