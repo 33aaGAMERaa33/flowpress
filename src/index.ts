@@ -14,6 +14,7 @@ export { DataSourceConfig } from "./decorators/database_config";
 // Exportando enums
 export { HttpMethod, } from "./enums/http_method";
 export { HttpStatus, } from "./enums/http_status";
+export { MiddlewareType, } from "./enums/middleware_type";
 // Exportando exceções
 export { HttpException, } from "./exceptions/http_exception";
 // Exportando modelos

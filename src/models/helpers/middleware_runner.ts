@@ -6,17 +6,19 @@ import { ControllerImplicitImpl } from "../../interfaces/controller.implicit.imp
 import { USE_MIDDLEWARE_METADATA_KEY } from "../../constants/metadata_keys/use_middleware";
 import { RoutesMiddlewares } from "../../decorators/use_middleware";
 import { ORIGINAL_CONSTRUCTOR_METADATA_KEY } from "../../constants/metadata_keys/original-constructor";
+import { MiddlewareType } from "../../enums/middleware_type";
 
 export class MiddlewareRunner {
     private constructor() {
 
     }
     // Metodo para executar os middlawares de uma rota especifica
-    static async run(
+    private static async run(
         appInstance: AppImplicitImpl, 
         controller: ControllerImplicitImpl, 
         route: Route, 
-        argsBuilderBuilderArgs: ArgsBuilderBuilderArgs
+        argsBuilderBuilderArgs: ArgsBuilderBuilderArgs,
+        middlawareType: MiddlewareType,
     ): Promise<void> {
         // Pega os middleware das rotas
         const routesMiddlewares: RoutesMiddlewares = Reflect.getMetadata(USE_MIDDLEWARE_METADATA_KEY, controller.__originalConstructor) ?? {};
@@ -29,7 +31,7 @@ export class MiddlewareRunner {
             // Procura entre os middlewares registrados e verifica se o middleware foi registrado no app
             for(const appMiddleware of appInstance.__middlawares) {
                 // Verifica se o middleware é igual ao da rota, se não for pula ele
-                if(middlewareOriginalConstructor !== appMiddleware.__originalConstructor) continue;
+                if(middlewareOriginalConstructor !== appMiddleware.__originalConstructor || appMiddleware.type !== middlawareType) continue;
                 // Adiciona um MiddlewareData para guardar os dados do middleware
                 argsBuilderBuilderArgs.middlawaresData.middlewaresData.push(new MiddlewareData(middlewareOriginalConstructor));
                 // Constroi os parametros de chamada do middleware
@@ -42,5 +44,23 @@ export class MiddlewareRunner {
                 await appMiddleware.handler(...args);
             }
         }
+    }
+
+    static runRequestMiddlewares(
+        appInstance: AppImplicitImpl, 
+        controller: ControllerImplicitImpl, 
+        route: Route, 
+        argsBuilderBuilderArgs: ArgsBuilderBuilderArgs,
+    ) {
+        return this.run(appInstance, controller, route, argsBuilderBuilderArgs, MiddlewareType.request);
+    }
+
+    static runResponseMiddlewares(
+        appInstance: AppImplicitImpl, 
+        controller: ControllerImplicitImpl, 
+        route: Route, 
+        argsBuilderBuilderArgs: ArgsBuilderBuilderArgs,
+    ) {
+        return this.run(appInstance, controller, route, argsBuilderBuilderArgs, MiddlewareType.response);
     }
 }

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MiddlewaresDataContainer = exports.MiddlewareData = exports.ResponseData = exports.Flowpress = exports.Route = exports.HttpException = exports.HttpStatus = exports.HttpMethod = exports.DataSourceConfig = exports.Module = exports.UseMiddleware = exports.MiddlewaresData = exports.Res = exports.Query = exports.Headers = exports.Body = exports.Middelware = exports.Method = exports.InjectionUser = exports.Injectable = exports.Inject = exports.InjectRepository = exports.Controller = exports.envApplyProperties = exports.EnvProperty = exports.AppConfig = void 0;
+exports.MiddlewaresDataContainer = exports.MiddlewareData = exports.ResponseData = exports.Flowpress = exports.Route = exports.HttpException = exports.MiddlewareType = exports.HttpStatus = exports.HttpMethod = exports.DataSourceConfig = exports.Module = exports.UseMiddleware = exports.MiddlewaresData = exports.Res = exports.Query = exports.Headers = exports.Body = exports.Middelware = exports.Method = exports.InjectionUser = exports.Injectable = exports.Inject = exports.InjectRepository = exports.Controller = exports.envApplyProperties = exports.EnvProperty = exports.AppConfig = void 0;
 // Exportando decoradores
 var app_config_1 = require("./decorators/app_config");
 Object.defineProperty(exports, "AppConfig", { enumerable: true, get: function () { return app_config_1.AppConfig; } });
@@ -37,6 +37,8 @@ var http_method_1 = require("./enums/http_method");
 Object.defineProperty(exports, "HttpMethod", { enumerable: true, get: function () { return http_method_1.HttpMethod; } });
 var http_status_1 = require("./enums/http_status");
 Object.defineProperty(exports, "HttpStatus", { enumerable: true, get: function () { return http_status_1.HttpStatus; } });
+var middleware_type_1 = require("./enums/middleware_type");
+Object.defineProperty(exports, "MiddlewareType", { enumerable: true, get: function () { return middleware_type_1.MiddlewareType; } });
 // Exportando exceções
 var http_exception_1 = require("./exceptions/http_exception");
 Object.defineProperty(exports, "HttpException", { enumerable: true, get: function () { return http_exception_1.HttpException; } });

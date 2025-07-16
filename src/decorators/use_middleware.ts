@@ -3,7 +3,7 @@ import { USE_MIDDLEWARE_METADATA_KEY } from "../constants/metadata_keys/use_midd
 
 export type RoutesMiddlewares = Record<string | symbol, ClassConstructor[]>;
 
-export function UseMiddleware<T extends ClassConstructor>(middlewareConstructor: T, canCancel?: boolean): MethodDecorator {
+export function UseMiddleware<T extends ClassConstructor>(middlewareConstructor: T, ): MethodDecorator {
     return function(target, propertyKey, _) {
         // Pega as definições de middlawares que vai ser usado
         const routesMiddlewares: RoutesMiddlewares = Reflect.getMetadata(USE_MIDDLEWARE_METADATA_KEY, target.constructor) ?? {};

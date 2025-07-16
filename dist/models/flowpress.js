@@ -50,10 +50,12 @@ class Flowpress {
                     response: response,
                     middlawaresData: middlawaresData,
                 };
-                await middleware_runner_1.MiddlewareRunner.run(appInstance, controller, route, argsBuilderBuilderArgs);
+                await middleware_runner_1.MiddlewareRunner.runRequestMiddlewares(appInstance, controller, route, argsBuilderBuilderArgs);
                 const args = args_builder_1.ArgsBuilder.build(argsBuilderBuilderArgs);
                 const handlerResult = await route.handler(...args);
-                Flowpress.resolveResponse(handlerResult, response, res);
+                response.setData(handlerResult);
+                await middleware_runner_1.MiddlewareRunner.runResponseMiddlewares(appInstance, controller, route, argsBuilderBuilderArgs);
+                Flowpress.resolveResponse(response, res);
             }
             catch (e) {
                 Flowpress.handleError(e, res);
@@ -80,8 +82,8 @@ class Flowpress {
             });
         });
     }
-    static resolveResponse(result, response, res) {
-        const finalData = response.getData() ?? result;
+    static resolveResponse(response, res) {
+        const finalData = response.getData();
         if (finalData !== undefined) {
             const [header, content] = Flowpress.parseContent(finalData);
             response.setHeader("Content-Type", header);

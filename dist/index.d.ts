@@ -12,6 +12,7 @@ export { Module } from "./decorators/module";
 export { DataSourceConfig } from "./decorators/database_config";
 export { HttpMethod, } from "./enums/http_method";
 export { HttpStatus, } from "./enums/http_status";
+export { MiddlewareType, } from "./enums/middleware_type";
 export { HttpException, } from "./exceptions/http_exception";
 export { Route, } from "./models/route";
 export { Flowpress } from "./models/flowpress";
