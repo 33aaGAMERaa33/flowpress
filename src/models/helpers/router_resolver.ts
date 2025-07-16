@@ -1,7 +1,7 @@
-import { HttpMethod } from "../enums/http_method";
-import { AppImplicitImpl } from "../interfaces/app_instance.implicit.impl";
-import { ControllerImplicitImpl } from "../interfaces/controller.implicit.impl";
-import { Route } from "../models/route";
+import { HttpMethod } from "../../enums/http_method";
+import { AppImplicitImpl } from "../../interfaces/app_instance.implicit.impl";
+import { ControllerImplicitImpl } from "../../interfaces/controller.implicit.impl";
+import { Route } from "../route";
 
 export class RouteResolver {
     private constructor(){

@@ -7,7 +7,7 @@ import { ControllerImplicitImpl } from "../interfaces/controller.implicit.impl";
 import { InjectableImplicitImpl } from "../interfaces/injectable.implicit.impl";
 import { ModuleImplicitImpl } from "../interfaces/module.implicit.impl";
 import { AppDeclarationService } from "../services/app_declaration.service";
-import { SolveInjectionsService } from "../services/solve_injections";
+import { SolveInjectionsService } from "../models/helpers/solve_injections";
 
 export function Module(data: {
     injectables?: ClassConstructor[],

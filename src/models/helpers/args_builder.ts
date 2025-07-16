@@ -1,10 +1,10 @@
 import { IncomingMessage } from "http";
 import { UrlWithParsedQuery } from "url";
-import { MiddlewaresDataContainer } from "../models/middlawares_data";
-import { ResponseData } from "../models/response_data";
-import { InstanceImplicitImpl } from "../interfaces/instance.implicit.impl";
-import { RequestParam } from "../enums/request_param";
-import { MethodsRequestParamsDefine } from "../decorators/request_params";
+import { MiddlewaresDataContainer } from "../middlawares_data";
+import { ResponseData } from "../response_data";
+import { InstanceImplicitImpl } from "../../interfaces/instance.implicit.impl";
+import { RequestParam } from "../../enums/request_param";
+import { MethodsRequestParamsDefine } from "../../decorators/request_params";
 
 export class ArgsBuilder {
     private constructor() {

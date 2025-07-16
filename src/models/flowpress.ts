@@ -7,9 +7,9 @@ import { HttpMethod } from "../enums/http_method";
 import { ResponseData } from "./response_data";
 import { HttpStatus } from "../enums/http_status";
 import { MiddlewaresDataContainer } from "./middlawares_data";
-import { RouteResolver } from "../services/router_resolver";
-import { MiddlewareRunner } from "../services/middleware_runner";
-import { ArgsBuilder, ArgsBuilderBuilderArgs } from "../services/args_builder";
+import { RouteResolver } from "./helpers/router_resolver";
+import { MiddlewareRunner } from "./helpers/middleware_runner";
+import { ArgsBuilder, ArgsBuilderBuilderArgs } from "./helpers/args_builder";
 
 export class Flowpress {
   private readonly app: AppImplicitImpl;

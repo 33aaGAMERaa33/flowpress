@@ -1,9 +1,9 @@
-import { InjectableImplicitImpl } from "../interfaces/injectable.implicit.impl";
-import { InstanceImplicitImpl } from "../interfaces/instance.implicit.impl";
-import { FIELDS_TO_INJECT_METADATA_KEY } from "../constants/metadata_keys/fields_to_inject";
-import { ORIGINAL_CONSTRUCTOR_METADATA_KEY } from "../constants/metadata_keys/original-constructor";
-import { InjectDefine } from "../decorators/injections";
-import { InjectionType } from "../enums/injection_type.enum";
+import { InjectableImplicitImpl } from "../../interfaces/injectable.implicit.impl";
+import { InstanceImplicitImpl } from "../../interfaces/instance.implicit.impl";
+import { FIELDS_TO_INJECT_METADATA_KEY } from "../../constants/metadata_keys/fields_to_inject";
+import { ORIGINAL_CONSTRUCTOR_METADATA_KEY } from "../../constants/metadata_keys/original-constructor";
+import { InjectDefine } from "../../decorators/injections";
+import { InjectionType } from "../../enums/injection_type.enum";
 import { DataSource } from "typeorm";
 
 export class SolveInjectionsService {

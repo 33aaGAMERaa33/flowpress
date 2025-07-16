@@ -1,11 +1,11 @@
-import { AppImplicitImpl } from "../interfaces/app_instance.implicit.impl";
-import { Route } from "../models/route";
+import { AppImplicitImpl } from "../../interfaces/app_instance.implicit.impl";
+import { Route } from "../route";
 import { ArgsBuilder, ArgsBuilderBuilderArgs } from "./args_builder";
-import { MiddlewareData } from "../models/middleware_data";
-import { ControllerImplicitImpl } from "../interfaces/controller.implicit.impl";
-import { USE_MIDDLEWARE_METADATA_KEY } from "../constants/metadata_keys/use_middleware";
-import { RoutesMiddlewares } from "../decorators/use_middleware";
-import { ORIGINAL_CONSTRUCTOR_METADATA_KEY } from "../constants/metadata_keys/original-constructor";
+import { MiddlewareData } from "../middleware_data";
+import { ControllerImplicitImpl } from "../../interfaces/controller.implicit.impl";
+import { USE_MIDDLEWARE_METADATA_KEY } from "../../constants/metadata_keys/use_middleware";
+import { RoutesMiddlewares } from "../../decorators/use_middleware";
+import { ORIGINAL_CONSTRUCTOR_METADATA_KEY } from "../../constants/metadata_keys/original-constructor";
 
 export class MiddlewareRunner {
     private constructor() {

@@ -9,7 +9,7 @@ import { CONTROLLER_METADATA_KEY } from "../constants/metadata_keys/controller";
 import { INJECTABLE_METADATA_KEY } from "../constants/metadata_keys/injectable";
 import { MIDDLEWARE_METADATA_KEY } from "../constants/metadata_keys/middelware";
 import { INSTANCES_PENDING_INJECTIONS } from "../constants/metadata_keys/instances_pending_injections";
-import { SolveInjectionsService } from "../services/solve_injections";
+import { SolveInjectionsService } from "../models/helpers/solve_injections";
 import { AppDeclarationService } from "../services/app_declaration.service";
 import { ModuleImplicitImpl } from "../interfaces/module.implicit.impl";
 import { MODULE_METADATA_KEY } from "../constants/metadata_keys/module";
