@@ -8,9 +8,12 @@ const app_1 = require("../constants/metadata_keys/app");
 const http_exception_1 = require("../exceptions/http_exception");
 const http_1 = __importDefault(require("http"));
 const url_1 = __importDefault(require("url"));
-const request_param_1 = require("../enums/request_param");
 const response_data_1 = require("./response_data");
 const http_status_1 = require("../enums/http_status");
+const middlawares_data_1 = require("./middlawares_data");
+const router_resolver_1 = require("../services/router_resolver");
+const middleware_runner_1 = require("../services/middleware_runner");
+const args_builder_1 = require("../services/args_builder");
 class Flowpress {
     app;
     constructor(app) {
@@ -19,112 +22,44 @@ class Flowpress {
     get port() {
         return this.app.__port;
     }
-    getRouteHandler(parsedUrl, method) {
-        for (const controller of this.app.__controllers) {
-            for (const route of controller.__routes) {
-                if (route.path === parsedUrl.pathname && route.method === method) {
-                    return [controller, route];
-                }
-            }
-        }
-    }
     static async start(app) {
-        // Verifica se a instancia fornecida é um app
-        if (!Reflect.getMetadata(app_1.APP_METADATA_KEY, app))
+        if (!Reflect.getMetadata(app_1.APP_METADATA_KEY, app)) {
             throw new Error("A instancia fornecida não contém metadados de app");
-        const appInstance = app; // Se a instancia fornecida for um app, ele será de forma implicita AppImplicitImpl
+        }
+        const appInstance = app;
         const flowpress = new Flowpress(app);
         const server = http_1.default.createServer(async (req, res) => {
             const parsedUrl = url_1.default.parse(req.url ?? "", true);
-            const [controller, route] = flowpress.getRouteHandler(parsedUrl, req.method) ?? [];
-            if (controller !== undefined && route !== undefined) {
-                try {
-                    const args = [];
-                    const methodsParamsMetadata = Reflect.getMetadata(request_param_1.RequestParam.MetadataKey, controller.__originalConstructor) ?? {};
-                    const methodParams = methodsParamsMetadata[route.propertyKey];
-                    const response = new response_data_1.ResponseData();
-                    if (methodParams !== undefined) {
-                        for (const [requestParam, parameterIndex] of methodParams) {
-                            switch (requestParam) {
-                                case request_param_1.RequestParam.response:
-                                    args[parameterIndex] = response;
-                                    break;
-                                case request_param_1.RequestParam.headers:
-                                    args[parameterIndex] = req.headers;
-                                    break;
-                                case request_param_1.RequestParam.query:
-                                    args[parameterIndex] = parsedUrl.query;
-                                    break;
-                                case request_param_1.RequestParam.body:
-                                    try {
-                                        args[parameterIndex] = await this.parseRequestBody(req);
-                                    }
-                                    catch (_) { }
-                                    break;
-                            }
-                        }
-                    }
-                    const handlerResult = await route.handler(...args);
-                    let responseData = response.getData();
-                    if (responseData !== undefined) {
-                        const [header, content] = this.parseContent(responseData);
-                        response.setHeader("Content-Type", header);
-                        response.setData(content);
-                    }
-                    else if (handlerResult !== undefined) {
-                        const [header, content] = this.parseContent(handlerResult);
-                        response.setHeader("Content-Type", header);
-                        response.setData(content);
-                    }
-                    else {
-                        response.setStatusCode(http_status_1.HttpStatus.NoContent);
-                    }
-                    if (response.getData() !== undefined) {
-                        response.setHeader("Content-Length", Buffer.byteLength(response.getData()));
-                    }
-                    res.writeHead(response.getStatusCode(), response.getHeaders());
-                    res.end(response.getData());
-                }
-                catch (e) {
-                    if (e instanceof http_exception_1.HttpException) {
-                        let responseData = new response_data_1.ResponseData();
-                        if (e.message !== undefined) {
-                            const [header, content] = this.parseContent(e.message);
-                            responseData.setData(content);
-                            responseData.setHeaders({
-                                "Content-Type": header,
-                                "content-length": Buffer.byteLength(content),
-                            });
-                        }
-                        res.writeHead(e.status, responseData.getHeaders());
-                        res.end(responseData.getData());
-                    }
-                    else {
-                        res.writeHead(http_status_1.HttpStatus.InternalServerError);
-                        res.end();
-                        throw e;
-                    }
-                }
-            }
-            else {
+            const routeHandler = router_resolver_1.RouteResolver.resolve(appInstance, parsedUrl.pathname, req.method);
+            if (!routeHandler) {
                 res.writeHead(404);
                 res.end();
+                return;
+            }
+            const [controller, route] = routeHandler;
+            try {
+                const response = new response_data_1.ResponseData();
+                const body = await Flowpress.parseRequestBody(req);
+                const middlawaresData = new middlawares_data_1.MiddlewaresDataContainer();
+                const argsBuilderBuilderArgs = {
+                    instance: controller,
+                    propertyKey: route.propertyKey,
+                    body: body,
+                    parsedUrl: parsedUrl,
+                    req: req,
+                    response: response,
+                    middlawaresData: middlawaresData,
+                };
+                await middleware_runner_1.MiddlewareRunner.run(appInstance, controller, route, argsBuilderBuilderArgs);
+                const args = args_builder_1.ArgsBuilder.build(argsBuilderBuilderArgs);
+                const handlerResult = await route.handler(...args);
+                Flowpress.resolveResponse(handlerResult, response, res);
+            }
+            catch (e) {
+                Flowpress.handleError(e, res);
             }
         });
         return await new Promise((resolve) => server.listen(appInstance.__port, () => resolve(flowpress)));
-    }
-    static parseContent(content) {
-        let header;
-        let response;
-        if (typeof content !== "object") {
-            header = "text/plain; charset=utf-8";
-            response = String(content);
-        }
-        else {
-            header = "application/json; charset=utf-8";
-            response = JSON.stringify(content);
-        }
-        return [header, response];
     }
     static async parseRequestBody(req) {
         return new Promise((resolve, reject) => {
@@ -144,6 +79,53 @@ class Flowpress {
                 reject(err);
             });
         });
+    }
+    static resolveResponse(result, response, res) {
+        const finalData = response.getData() ?? result;
+        if (finalData !== undefined) {
+            const [header, content] = Flowpress.parseContent(finalData);
+            response.setHeader("Content-Type", header);
+            response.setData(content);
+            response.setHeader("Content-Length", Buffer.byteLength(content));
+        }
+        else {
+            response.setStatusCode(http_status_1.HttpStatus.NoContent);
+        }
+        res.writeHead(response.getStatusCode(), response.getHeaders());
+        res.end(response.getData());
+    }
+    static handleError(error, res) {
+        if (error instanceof http_exception_1.HttpException) {
+            const response = new response_data_1.ResponseData();
+            if (error.message !== undefined) {
+                const [header, content] = Flowpress.parseContent(error.message);
+                response.setData(content);
+                response.setHeaders({
+                    "Content-Type": header,
+                    "Content-Length": Buffer.byteLength(content),
+                });
+            }
+            res.writeHead(error.status, response.getHeaders());
+            res.end(response.getData());
+        }
+        else {
+            res.writeHead(http_status_1.HttpStatus.InternalServerError);
+            res.end();
+            throw error;
+        }
+    }
+    static parseContent(content) {
+        let header;
+        let response;
+        if (typeof content !== "object") {
+            header = "text/plain; charset=utf-8";
+            response = String(content);
+        }
+        else {
+            header = "application/json; charset=utf-8";
+            response = JSON.stringify(content);
+        }
+        return [header, response];
     }
 }
 exports.Flowpress = Flowpress;

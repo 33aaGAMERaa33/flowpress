@@ -4,7 +4,7 @@ exports.AppConfig = AppConfig;
 const app_1 = require("../constants/metadata_keys/app");
 const controller_1 = require("../constants/metadata_keys/controller");
 const injectable_1 = require("../constants/metadata_keys/injectable");
-const middalware_1 = require("../constants/metadata_keys/middalware");
+const middelware_1 = require("../constants/metadata_keys/middelware");
 const instances_pending_injections_1 = require("../constants/metadata_keys/instances_pending_injections");
 const solve_injections_1 = require("../services/solve_injections");
 const app_declaration_service_1 = require("../services/app_declaration.service");
@@ -33,7 +33,7 @@ function AppConfig(data) {
         // Chama uma função para instanciar e retornar uma lista de instancias dos construtores usados
         const middlawaresInstance = app_declaration_service_1.AppDeclarationService.instanceImplicitImplements(middlawaresConstructor, (middlawareConstructor) => {
             // Valida se a classe é um controllador
-            if (!Reflect.getMetadata(middalware_1.MIDDLAWARE_METADATA_KEY, middlawareConstructor))
+            if (!Reflect.getMetadata(middelware_1.MIDDLEWARE_METADATA_KEY, middlawareConstructor))
                 throw new Error(`A classe ${middlawareConstructor.name} não tem metadados de middlaware`);
         });
         // Chama uma função para instanciar e retornar uma lista de instancias dos construtores usados

@@ -1,7 +1,8 @@
 export declare enum RequestParam {
-    MetadataKey = "all",
-    response = "response",
-    headers = "headers",
-    query = "query",
-    body = "body"
+    MetadataKey = 0,
+    middlewaresData = 1,
+    response = 2,
+    headers = 3,
+    query = 4,
+    body = 5
 }

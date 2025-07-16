@@ -1,6 +1,6 @@
 import { ClassConstructor } from "../defines/class_constructor";
 import { ControllerImplicitImpl } from "../interfaces/controller.implicit.impl";
-import { MiddlawareImplicitImpl } from "../interfaces/middlaware.implicit.impl";
+import { MiddlewareImplicitImpl } from "../interfaces/middleware.implicit.impl";
 import { DataSource } from "typeorm";
 export declare function AppConfig<T>(data: {
     port: (instance: T) => number;
@@ -16,7 +16,7 @@ export declare function AppConfig<T>(data: {
         __dataSource?: DataSource | undefined;
         __onLoaded?: Promise<void> | undefined;
         readonly __originalConstructor: ClassConstructor;
-        readonly __middlawares: MiddlawareImplicitImpl[];
+        readonly __middlawares: MiddlewareImplicitImpl[];
         readonly __controllers: ControllerImplicitImpl[];
     };
 } & T_1;
