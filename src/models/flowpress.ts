@@ -131,7 +131,6 @@ export class Flowpress {
     } else {
       res.writeHead(HttpStatus.InternalServerError);
       res.end();
-      throw error;
     }
   }
 

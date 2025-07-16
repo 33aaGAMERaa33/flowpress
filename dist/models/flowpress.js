@@ -113,7 +113,6 @@ class Flowpress {
         else {
             res.writeHead(http_status_1.HttpStatus.InternalServerError);
             res.end();
-            throw error;
         }
     }
     static parseContent(content) {
