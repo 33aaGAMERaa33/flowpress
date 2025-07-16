@@ -1,7 +1,8 @@
 export enum RequestParam {
-    MetadataKey = "all",
-    response = "response",
-    headers = "headers",
-    query = "query",
-    body = "body",
+    MetadataKey,
+    middlewaresData,
+    response,
+    headers,
+    query,
+    body,
 }

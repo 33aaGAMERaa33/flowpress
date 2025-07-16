@@ -1,5 +1,6 @@
 import { RequestParam } from "../enums/request_param";
 
+export type MethodsRequestParamsDefine = Record<string | symbol, RequestParamBinding[]>;
 export type RequestParamBinding = [RequestParam, number];
 
 function createRequestParamDecorator(requestParam: RequestParam): ParameterDecorator {
@@ -8,7 +9,7 @@ function createRequestParamDecorator(requestParam: RequestParam): ParameterDecor
         if(propertyKey === undefined) return;
 
         // Pega os parametros de requisição antes guardados
-        const methodParamsMetadata: Record<string | symbol, RequestParamBinding[]> = Reflect.getMetadata(RequestParam.MetadataKey, target.constructor) ?? {};
+        const methodParamsMetadata: MethodsRequestParamsDefine = Reflect.getMetadata(RequestParam.MetadataKey, target.constructor) ?? {};
 
         // Cria uma lista caso não tenha
         methodParamsMetadata[propertyKey] ??= [];
@@ -25,3 +26,4 @@ export const Body = () => createRequestParamDecorator(RequestParam.body);
 export const Query = () => createRequestParamDecorator(RequestParam.query);
 export const Res = () => createRequestParamDecorator(RequestParam.response);
 export const Headers = () => createRequestParamDecorator(RequestParam.headers);
+export const MiddlewaresData = () => createRequestParamDecorator(RequestParam.middlewaresData);

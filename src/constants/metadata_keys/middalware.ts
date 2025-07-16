@@ -1,1 +1,0 @@
-export const MIDDLAWARE_METADATA_KEY = "middlaware";

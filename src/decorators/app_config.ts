@@ -3,11 +3,11 @@ import { AppImplicitImpl } from "../interfaces/app_instance.implicit.impl";
 import { ControllerImplicitImpl } from "../interfaces/controller.implicit.impl";
 import { InjectableImplicitImpl } from "../interfaces/injectable.implicit.impl";
 import { InstanceImplicitImpl } from "../interfaces/instance.implicit.impl";
-import { MiddlawareImplicitImpl } from "../interfaces/middlaware.implicit.impl";
+import { MiddlewareImplicitImpl } from "../interfaces/middleware.implicit.impl";
 import { APP_METADATA_KEY } from "../constants/metadata_keys/app";
 import { CONTROLLER_METADATA_KEY } from "../constants/metadata_keys/controller";
 import { INJECTABLE_METADATA_KEY } from "../constants/metadata_keys/injectable";
-import { MIDDLAWARE_METADATA_KEY } from "../constants/metadata_keys/middalware";
+import { MIDDLEWARE_METADATA_KEY } from "../constants/metadata_keys/middelware";
 import { INSTANCES_PENDING_INJECTIONS } from "../constants/metadata_keys/instances_pending_injections";
 import { SolveInjectionsService } from "../services/solve_injections";
 import { AppDeclarationService } from "../services/app_declaration.service";
@@ -47,9 +47,9 @@ export function AppConfig<T>(data: {
         });
         
         // Chama uma função para instanciar e retornar uma lista de instancias dos construtores usados
-        const middlawaresInstance = AppDeclarationService.instanceImplicitImplements<MiddlawareImplicitImpl>(middlawaresConstructor, (middlawareConstructor) => {
+        const middlawaresInstance = AppDeclarationService.instanceImplicitImplements<MiddlewareImplicitImpl>(middlawaresConstructor, (middlawareConstructor) => {
             // Valida se a classe é um controllador
-            if(!Reflect.getMetadata(MIDDLAWARE_METADATA_KEY, middlawareConstructor)) 
+            if(!Reflect.getMetadata(MIDDLEWARE_METADATA_KEY, middlawareConstructor)) 
                 throw new Error(`A classe ${middlawareConstructor.name} não tem metadados de middlaware`);
 
         });
@@ -114,7 +114,7 @@ export function AppConfig<T>(data: {
             __dataSource?: DataSource | undefined;
             __onLoaded?: Promise<void> | undefined;
             readonly __originalConstructor: ClassConstructor = constructor;
-            readonly __middlawares: MiddlawareImplicitImpl[] = middlawaresInstance;
+            readonly __middlawares: MiddlewareImplicitImpl[] = middlawaresInstance;
             readonly __controllers: ControllerImplicitImpl[] = controllersInstance;
 
             constructor(...args: any[]) {
