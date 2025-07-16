@@ -22,7 +22,7 @@ class Flowpress {
     get port() {
         return this.app.__port;
     }
-    static async start(app) {
+    static async start(app, catchError) {
         if (!Reflect.getMetadata(app_1.APP_METADATA_KEY, app)) {
             throw new Error("A instancia fornecida não contém metadados de app");
         }
@@ -58,7 +58,7 @@ class Flowpress {
                 Flowpress.resolveResponse(response, res);
             }
             catch (e) {
-                Flowpress.handleError(e, res);
+                Flowpress.handleError(e, res, route, catchError);
             }
         });
         return await new Promise((resolve) => server.listen(appInstance.__port, () => resolve(flowpress)));
@@ -96,7 +96,7 @@ class Flowpress {
         res.writeHead(response.getStatusCode(), response.getHeaders());
         res.end(response.getData());
     }
-    static handleError(error, res) {
+    static handleError(error, res, route, catchError) {
         if (error instanceof http_exception_1.HttpException) {
             const response = new response_data_1.ResponseData();
             if (error.message !== undefined) {
@@ -113,6 +113,9 @@ class Flowpress {
         else {
             res.writeHead(http_status_1.HttpStatus.InternalServerError);
             res.end();
+            if (!catchError)
+                throw error;
+            catchError(route, error);
         }
     }
     static parseContent(content) {

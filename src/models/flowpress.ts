@@ -10,6 +10,7 @@ import { MiddlewaresDataContainer } from "./middlawares_data";
 import { RouteResolver } from "./helpers/router_resolver";
 import { MiddlewareRunner } from "./helpers/middleware_runner";
 import { ArgsBuilder, ArgsBuilderBuilderArgs } from "./helpers/args_builder";
+import { Route } from "./route";
 
 export class Flowpress {
   private readonly app: AppImplicitImpl;
@@ -22,7 +23,7 @@ export class Flowpress {
     return this.app.__port;
   }
 
-  static async start(app: any): Promise<Flowpress> {
+  static async start(app: any, catchError?: (route: Route, e: unknown) => void): Promise<Flowpress> {
     if (!Reflect.getMetadata(APP_METADATA_KEY, app)) {
       throw new Error("A instancia fornecida não contém metadados de app");
     }
@@ -68,7 +69,7 @@ export class Flowpress {
 
         Flowpress.resolveResponse(response, res);
       } catch (e) {
-        Flowpress.handleError(e, res);
+        Flowpress.handleError(e, res, route, catchError);
       }
     });
 
@@ -113,7 +114,7 @@ export class Flowpress {
     res.end(response.getData());
   }
 
-  private static handleError(error: unknown, res: http.ServerResponse) {
+  private static handleError(error: unknown, res: http.ServerResponse, route: Route, catchError?: (route: Route, e: unknown) => void) {
     if (error instanceof HttpException) {
       const response = new ResponseData();
 
@@ -131,6 +132,10 @@ export class Flowpress {
     } else {
       res.writeHead(HttpStatus.InternalServerError);
       res.end();
+
+      if(!catchError) throw error;
+      
+      catchError(route, error);
     }
   }
 
