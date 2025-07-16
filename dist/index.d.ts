@@ -20,4 +20,5 @@ export { ResponseData } from "./models/response_data";
 export { MiddlewareData } from "./models/middleware_data";
 export { MiddlewaresDataContainer } from "./models/middlawares_data";
 export { DatabaseConfigImpl } from "./interfaces/database_config.impl";
+export { MiddlewareImpl } from "./interfaces/middleware.impl";
 export { ClassConstructor } from "./defines/class_constructor";

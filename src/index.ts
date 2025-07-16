@@ -25,5 +25,6 @@ export { MiddlewareData } from "./models/middleware_data";
 export { MiddlewaresDataContainer } from "./models/middlawares_data";
 // Exportando interfaces
 export { DatabaseConfigImpl } from "./interfaces/database_config.impl";
+export { MiddlewareImpl } from "./interfaces/middleware.impl";
 // Exportando definições
 export { ClassConstructor } from "./defines/class_constructor";
