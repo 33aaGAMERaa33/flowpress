@@ -92,21 +92,31 @@ export class Flowpress {
                         response.setStatusCode(HttpStatus.NoContent);
                     }
 
-                    response.setHeader("Content-Length", Buffer.byteLength(response.getData()));
+                    if(response.getData() !== undefined) {
+                        response.setHeader("Content-Length", Buffer.byteLength(response.getData()));
+                    }
                     
                     res.writeHead(response.getStatusCode(), response.getHeaders());
                     res.end(response.getData());
                 }catch(e) {
                     if(e instanceof HttpException) {
-                        const [header, content] = this.parseContent(e.message);
-                        
-                        res.writeHead(e.status, {
-                            "Content-Type": header,
-                            "Content-Length": Buffer.byteLength(content),
-                        });
+                        let responseData = new ResponseData();
 
-                        res.end(content);
+                        if(e.message !== undefined) {
+                            const [header, content] = this.parseContent(e.message);
+
+                            responseData.setData(content);
+                            responseData.setHeaders({
+                                "Content-Type": header,
+                                "content-length": Buffer.byteLength(content),
+                            });
+                        }
+
+                        res.writeHead(e.status, responseData.getHeaders());
+                        res.end(responseData.getData());
                     }else {
+                        res.writeHead(HttpStatus.InternalServerError);
+                        res.end();
                         throw e;
                     }
                 }
