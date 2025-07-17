@@ -14,15 +14,19 @@ class ArgsBuilder {
         // Pega especificamente o que foi requisitado para construir os argumentos
         const methodRequestParams = methodsRequestParams[data.propertyKey] ?? [];
         // Intera sobre os parametros requisitados para construir os parametros de chamada
-        for (const [requestParam, parameterIndex] of methodRequestParams) {
+        for (const [requestParam, parameterIndex, value] of methodRequestParams) {
             const param = (() => {
                 switch (requestParam) {
                     case request_param_1.RequestParam.middlewaresData:
                         return data.middlawaresData;
+                    case request_param_1.RequestParam.request:
+                        return data.request;
                     case request_param_1.RequestParam.response:
                         return data.response;
                     case request_param_1.RequestParam.headers:
-                        return data.req.headers;
+                        return data.request.getHeaders();
+                    case request_param_1.RequestParam.header:
+                        return data.request.getHeader(value);
                     case request_param_1.RequestParam.query:
                         return data.parsedUrl.query;
                     case request_param_1.RequestParam.body:

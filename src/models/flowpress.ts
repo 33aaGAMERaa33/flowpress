@@ -4,13 +4,14 @@ import { AppImplicitImpl } from "../interfaces/app_instance.implicit.impl";
 import http, { IncomingMessage } from "http";
 import url from "url";
 import { HttpMethod } from "../enums/http_method";
-import { ResponseData } from "./response_data";
+import { FlowResponse } from "./flow_response";
 import { HttpStatus } from "../enums/http_status";
 import { MiddlewaresDataContainer } from "./middlawares_data";
 import { RouteResolver } from "./helpers/router_resolver";
 import { MiddlewareRunner } from "./helpers/middleware_runner";
 import { ArgsBuilder, ArgsBuilderBuilderArgs } from "./helpers/args_builder";
 import { Route } from "./route";
+import { FlowRequest } from "./flow_request";
 
 export class Flowpress {
   private readonly app: AppImplicitImpl;
@@ -44,17 +45,18 @@ export class Flowpress {
       const [controller, route] = routeHandler;
 
       try {
-        const response = new ResponseData();
+        const flowRequest = new FlowRequest(req);
+        const flowResponse = new FlowResponse();
         const body = await Flowpress.parseRequestBody(req);
         const middlawaresData = new MiddlewaresDataContainer();
 
         const argsBuilderBuilderArgs = {
             instance: controller,
             propertyKey: route.propertyKey,
-            body: body,
+            request: flowRequest,
+            response: flowResponse,
             parsedUrl: parsedUrl,
-            req: req,
-            response: response,
+            body: body,
             middlawaresData: middlawaresData,
         } as ArgsBuilderBuilderArgs;
 
@@ -63,11 +65,11 @@ export class Flowpress {
         const args = ArgsBuilder.build(argsBuilderBuilderArgs);
         const handlerResult = await route.handler(...args);
         
-        response.setData(handlerResult);
+        flowResponse.setData(handlerResult);
 
         await MiddlewareRunner.runResponseMiddlewares(appInstance, controller, route, argsBuilderBuilderArgs);
 
-        Flowpress.resolveResponse(response, res);
+        Flowpress.resolveResponse(flowResponse, res);
       } catch (e) {
         Flowpress.handleError(e, res, route, catchError);
       }
@@ -99,7 +101,7 @@ export class Flowpress {
     });
   }
 
-  private static resolveResponse(response: ResponseData, res: http.ServerResponse) {
+  private static resolveResponse(response: FlowResponse, res: http.ServerResponse) {
     const finalData = response.getData();
 
     if (finalData !== undefined) {
@@ -117,7 +119,7 @@ export class Flowpress {
 
   private static handleError(error: unknown, res: http.ServerResponse, route: Route, catchError?: (route: Route, e: unknown) => void) {
     if (error instanceof HttpException) {
-      const response = new ResponseData();
+      const response = new FlowResponse();
 
       if (error.message !== undefined) {
         const [header, content] = Flowpress.parseContent(error.message);

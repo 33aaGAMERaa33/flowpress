@@ -1,7 +1,7 @@
 import { HttpStatus } from "../enums/http_status";
 import http from "http";
 
-export class ResponseData {
+export class FlowResponse {
     private data: any;
     private status: number = 200;
     private headers: http.OutgoingHttpHeaders = {};

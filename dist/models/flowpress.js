@@ -8,12 +8,13 @@ const app_1 = require("../constants/metadata_keys/app");
 const http_exception_1 = require("../exceptions/http_exception");
 const http_1 = __importDefault(require("http"));
 const url_1 = __importDefault(require("url"));
-const response_data_1 = require("./response_data");
+const flow_response_1 = require("./flow_response");
 const http_status_1 = require("../enums/http_status");
 const middlawares_data_1 = require("./middlawares_data");
 const router_resolver_1 = require("./helpers/router_resolver");
 const middleware_runner_1 = require("./helpers/middleware_runner");
 const args_builder_1 = require("./helpers/args_builder");
+const flow_request_1 = require("./flow_request");
 class Flowpress {
     app;
     constructor(app) {
@@ -38,24 +39,25 @@ class Flowpress {
             }
             const [controller, route] = routeHandler;
             try {
-                const response = new response_data_1.ResponseData();
+                const flowRequest = new flow_request_1.FlowRequest(req);
+                const flowResponse = new flow_response_1.FlowResponse();
                 const body = await Flowpress.parseRequestBody(req);
                 const middlawaresData = new middlawares_data_1.MiddlewaresDataContainer();
                 const argsBuilderBuilderArgs = {
                     instance: controller,
                     propertyKey: route.propertyKey,
-                    body: body,
+                    request: flowRequest,
+                    response: flowResponse,
                     parsedUrl: parsedUrl,
-                    req: req,
-                    response: response,
+                    body: body,
                     middlawaresData: middlawaresData,
                 };
                 await middleware_runner_1.MiddlewareRunner.runRequestMiddlewares(appInstance, controller, route, argsBuilderBuilderArgs);
                 const args = args_builder_1.ArgsBuilder.build(argsBuilderBuilderArgs);
                 const handlerResult = await route.handler(...args);
-                response.setData(handlerResult);
+                flowResponse.setData(handlerResult);
                 await middleware_runner_1.MiddlewareRunner.runResponseMiddlewares(appInstance, controller, route, argsBuilderBuilderArgs);
-                Flowpress.resolveResponse(response, res);
+                Flowpress.resolveResponse(flowResponse, res);
             }
             catch (e) {
                 Flowpress.handleError(e, res, route, catchError);
@@ -101,7 +103,7 @@ class Flowpress {
     }
     static handleError(error, res, route, catchError) {
         if (error instanceof http_exception_1.HttpException) {
-            const response = new response_data_1.ResponseData();
+            const response = new flow_response_1.FlowResponse();
             if (error.message !== undefined) {
                 const [header, content] = Flowpress.parseContent(error.message);
                 response.setData(content);

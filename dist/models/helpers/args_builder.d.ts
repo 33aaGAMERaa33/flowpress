@@ -1,8 +1,8 @@
-import { IncomingMessage } from "http";
 import { UrlWithParsedQuery } from "url";
 import { MiddlewaresDataContainer } from "../middlawares_data";
-import { ResponseData } from "../response_data";
+import { FlowResponse } from "../flow_response";
 import { InstanceImplicitImpl } from "../../interfaces/instance.implicit.impl";
+import { FlowRequest } from "../flow_request";
 export declare class ArgsBuilder {
     private constructor();
     static build(data: ArgsBuilderBuilderArgs): any[];
@@ -10,8 +10,8 @@ export declare class ArgsBuilder {
 export interface ArgsBuilderBuilderArgs {
     instance: InstanceImplicitImpl;
     propertyKey: string | symbol;
-    req: IncomingMessage;
-    response: ResponseData;
+    request: FlowRequest;
+    response: FlowResponse;
     parsedUrl: UrlWithParsedQuery;
     body: any;
     middlawaresData: MiddlewaresDataContainer;

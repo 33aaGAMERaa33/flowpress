@@ -7,7 +7,7 @@ export { Injectable } from "./decorators/injectable";
 export { InjectionUser } from "./decorators/injection_user";
 export { Method } from "./decorators/method";
 export { Middelware } from "./decorators/middleware";
-export { Body, Headers, Query, Res, MiddlewaresData } from "./decorators/request_params";
+export { Body, Header, Headers, Query, Req, Res, MiddlewaresData } from "./decorators/request_params";
 export { UseMiddleware } from "./decorators/use_middleware";
 export { Module } from "./decorators/module";
 export { DataSourceConfig } from "./decorators/database_config";
@@ -20,7 +20,8 @@ export { HttpException, } from "./exceptions/http_exception";
 // Exportando modelos
 export { Route, } from "./models/route";
 export { Flowpress } from "./models/flowpress";
-export { ResponseData } from "./models/response_data";
+export { FlowRequest } from "./models/flow_request";
+export { FlowResponse } from "./models/flow_response";
 export { MiddlewareData } from "./models/middleware_data";
 export { MiddlewaresDataContainer } from "./models/middlawares_data";
 // Exportando interfaces
