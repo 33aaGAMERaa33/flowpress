@@ -17,7 +17,7 @@ export class ArgsBuilder {
         // Pega os parametros dos metodos da classe que foi guardado
         const methodsRequestParams: MethodsRequestParamsDefine = Reflect.getMetadata(RequestParam.MetadataKey, data.instance.__originalConstructor) ?? {};
         // Pega especificamente o que foi requisitado para construir os argumentos
-        const methodRequestParams = methodsRequestParams[data.propertyKey];
+        const methodRequestParams = methodsRequestParams[data.propertyKey] ?? [];
 
         // Intera sobre os parametros requisitados para construir os parametros de chamada
         for(const [requestParam, parameterIndex] of methodRequestParams) {

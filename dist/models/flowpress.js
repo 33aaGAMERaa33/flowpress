@@ -65,13 +65,16 @@ class Flowpress {
     }
     static async parseRequestBody(req) {
         return new Promise((resolve, reject) => {
-            let body = '';
+            let body = undefined;
             req.on('data', chunk => {
                 body += chunk;
             });
             req.on('end', () => {
                 try {
-                    resolve(JSON.parse(body));
+                    if (body !== undefined)
+                        resolve(JSON.parse(body));
+                    else
+                        resolve(undefined);
                 }
                 catch (err) {
                     reject(err);
