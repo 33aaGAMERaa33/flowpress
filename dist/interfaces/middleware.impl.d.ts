@@ -1,5 +1,5 @@
 import { MiddlewareType } from "../enums/middleware_type";
-export interface MiddlewareImpl {
+import { BaseMiddlewareImpl } from "./base_middleware.impl";
+export interface MiddlewareImpl extends BaseMiddlewareImpl {
     type: MiddlewareType;
-    handler(...args: any[]): Promise<void> | void;
 }

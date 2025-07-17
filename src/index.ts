@@ -6,7 +6,7 @@ export { InjectRepository, Inject } from "./decorators/injections";
 export { Injectable } from "./decorators/injectable";
 export { InjectionUser } from "./decorators/injection_user";
 export { Method } from "./decorators/method";
-export { Middelware } from "./decorators/middleware";
+export { Middleware } from "./decorators/middleware";
 export { Body, Header, Headers, Query, Req, Res, MiddlewaresData } from "./decorators/request_params";
 export { UseMiddleware } from "./decorators/use_middleware";
 export { Module } from "./decorators/module";
@@ -15,6 +15,7 @@ export { DataSourceConfig } from "./decorators/database_config";
 export { HttpMethod, } from "./enums/http_method";
 export { HttpStatus, } from "./enums/http_status";
 export { MiddlewareType, } from "./enums/middleware_type";
+export { GlobalMiddlewareType, } from "./enums/global_middlaware_type";
 // Exportando exceções
 export { HttpException, } from "./exceptions/http_exception";
 // Exportando modelos
@@ -25,7 +26,8 @@ export { FlowResponse } from "./models/flow_response";
 export { MiddlewareData } from "./models/middleware_data";
 export { MiddlewaresDataContainer } from "./models/middlawares_data";
 // Exportando interfaces
-export { DatabaseConfigImpl } from "./interfaces/database_config.impl";
 export { MiddlewareImpl } from "./interfaces/middleware.impl";
+export { GlobalMiddlewareImpl } from "./interfaces/global_middleware.impl";
+export { DatabaseConfigImpl } from "./interfaces/database_config.impl";
 // Exportando definições
 export { ClassConstructor } from "./defines/class_constructor";

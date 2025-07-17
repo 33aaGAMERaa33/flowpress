@@ -17,26 +17,38 @@ import { ORIGINAL_CONSTRUCTOR_METADATA_KEY } from "../constants/metadata_keys/or
 import { DATABASE_CONFIG_METADATA_KEY } from "../constants/metadata_keys/database_config";
 import { DatabaseConfigImpl } from "../interfaces/database_config.impl";
 import { DataSource } from "typeorm";
+import { MiddlewareImpl } from "../interfaces/middleware.impl";
+import { GlobalMiddlewareImpl } from "../interfaces/global_middleware.impl";
+import { GlobalMiddlewareImplicitImpl } from "../interfaces/global_middleware.implicit.impl";
 
 export function AppConfig<T>(data: {
     port: (instance: T) => number, // Essa função é chamada após o instanciamento da classe
     databaseConfig?: ClassConstructor,
     modules?: ClassConstructor[],
     injectables?: ClassConstructor[],
-    middlawares?: ClassConstructor[],
     controllers?: ClassConstructor[],
+    middlewares?: ClassConstructor<MiddlewareImpl>[],
+    globalMiddlewares?: ClassConstructor<GlobalMiddlewareImpl>[],
 }) {
     return function <T extends ClassConstructor>(constructor: T) {
         // Pega o construtor original guardado caso houver
         const originalConstructor = Reflect.getMetadata(ORIGINAL_CONSTRUCTOR_METADATA_KEY, constructor) ?? constructor;
         let dataSource: DataSource | undefined;
         
-        const [databaseConfigConstructor, modulesConstructor, controllersConstructor, middlawaresConstructor, injectablesConstructor] = [
+        const [
+            databaseConfigConstructor, 
+            modulesConstructor, 
+            controllersConstructor, 
+            middlewaresConstructor, 
+            injectablesConstructor,
+            globalMiddlewaresConstructor,
+        ] = [
             data.databaseConfig,
             data.modules ?? [], 
             data.controllers ?? [], 
-            data.middlawares ?? [],
-            data.injectables ?? []
+            data.middlewares ?? [],
+            data.injectables ?? [],
+            data.globalMiddlewares ?? [],
         ];
         
         // Chama uma função para instanciar e retornar uma lista de instancias dos construtores usados
@@ -47,11 +59,18 @@ export function AppConfig<T>(data: {
         });
         
         // Chama uma função para instanciar e retornar uma lista de instancias dos construtores usados
-        const middlawaresInstance = AppDeclarationService.instanceImplicitImplements<MiddlewareImplicitImpl>(middlawaresConstructor, (middlawareConstructor) => {
+        const middlewaresInstance = AppDeclarationService.instanceImplicitImplements<MiddlewareImplicitImpl>(middlewaresConstructor, (middlewareConstructor) => {
             // Valida se a classe é um controllador
-            if(!Reflect.getMetadata(MIDDLEWARE_METADATA_KEY, middlawareConstructor)) 
-                throw new Error(`A classe ${middlawareConstructor.name} não tem metadados de middlaware`);
+            if(!Reflect.getMetadata(MIDDLEWARE_METADATA_KEY, middlewareConstructor)) 
+                throw new Error(`A classe ${middlewareConstructor.name} não tem metadados de middleware`);
 
+        });
+
+        // Chama uma função para instanciar e retornar uma lista de instancias dos construtores usados
+        const globalMiddlewaresInstance = AppDeclarationService.instanceImplicitImplements<GlobalMiddlewareImplicitImpl>(globalMiddlewaresConstructor, (middlewareConstructor) => {
+            // Valida se a classe é um controllador
+            if(!Reflect.getMetadata(MIDDLEWARE_METADATA_KEY, middlewareConstructor)) 
+                throw new Error(`A classe ${middlewareConstructor.name} não tem metadados de middleware`);
         });
         
         // Chama uma função para instanciar e retornar uma lista de instancias dos construtores usados
@@ -114,8 +133,9 @@ export function AppConfig<T>(data: {
             __dataSource?: DataSource | undefined;
             __onLoaded?: Promise<void> | undefined;
             readonly __originalConstructor: ClassConstructor = constructor;
-            readonly __middlawares: MiddlewareImplicitImpl[] = middlawaresInstance;
             readonly __controllers: ControllerImplicitImpl[] = controllersInstance;
+            readonly __middlewares: MiddlewareImplicitImpl[] = middlewaresInstance;
+            readonly __globalMiddlewares: GlobalMiddlewareImplicitImpl[] = globalMiddlewaresInstance;
 
             constructor(...args: any[]) {
                 super(...args);

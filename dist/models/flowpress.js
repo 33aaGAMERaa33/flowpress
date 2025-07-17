@@ -15,6 +15,8 @@ const router_resolver_1 = require("./helpers/router_resolver");
 const middleware_runner_1 = require("./helpers/middleware_runner");
 const args_builder_1 = require("./helpers/args_builder");
 const flow_request_1 = require("./flow_request");
+const middleware_type_1 = require("../enums/middleware_type");
+const global_middlaware_type_1 = require("../enums/global_middlaware_type");
 class Flowpress {
     app;
     constructor(app) {
@@ -52,11 +54,15 @@ class Flowpress {
                     body: body,
                     middlawaresData: middlawaresData,
                 };
-                await middleware_runner_1.MiddlewareRunner.runRequestMiddlewares(appInstance, controller, route, argsBuilderBuilderArgs);
+                await middleware_runner_1.MiddlewareRunner.runGlobalMiddlewares(appInstance.__globalMiddlewares, argsBuilderBuilderArgs, global_middlaware_type_1.GlobalMiddlewareType.beforeRequestMiddlewares);
+                await middleware_runner_1.MiddlewareRunner.runRouteMiddlewares(appInstance.__middlewares, controller, route, argsBuilderBuilderArgs, middleware_type_1.MiddlewareType.request);
+                await middleware_runner_1.MiddlewareRunner.runGlobalMiddlewares(appInstance.__globalMiddlewares, argsBuilderBuilderArgs, global_middlaware_type_1.GlobalMiddlewareType.afterRequestMiddlewares);
                 const args = args_builder_1.ArgsBuilder.build(argsBuilderBuilderArgs);
                 const handlerResult = await route.handler(...args);
                 flowResponse.setData(handlerResult);
-                await middleware_runner_1.MiddlewareRunner.runResponseMiddlewares(appInstance, controller, route, argsBuilderBuilderArgs);
+                await middleware_runner_1.MiddlewareRunner.runGlobalMiddlewares(appInstance.__globalMiddlewares, argsBuilderBuilderArgs, global_middlaware_type_1.GlobalMiddlewareType.beforeResposeMiddlewares);
+                await middleware_runner_1.MiddlewareRunner.runRouteMiddlewares(appInstance.__middlewares, controller, route, argsBuilderBuilderArgs, middleware_type_1.MiddlewareType.response);
+                await middleware_runner_1.MiddlewareRunner.runGlobalMiddlewares(appInstance.__globalMiddlewares, argsBuilderBuilderArgs, global_middlaware_type_1.GlobalMiddlewareType.afterResposeMiddlewares);
                 Flowpress.resolveResponse(flowResponse, res);
             }
             catch (e) {

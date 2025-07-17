@@ -12,6 +12,8 @@ import { MiddlewareRunner } from "./helpers/middleware_runner";
 import { ArgsBuilder, ArgsBuilderBuilderArgs } from "./helpers/args_builder";
 import { Route } from "./route";
 import { FlowRequest } from "./flow_request";
+import { MiddlewareType } from "../enums/middleware_type";
+import { GlobalMiddlewareType } from "../enums/global_middlaware_type";
 
 export class Flowpress {
   private readonly app: AppImplicitImpl;
@@ -60,14 +62,18 @@ export class Flowpress {
             middlawaresData: middlawaresData,
         } as ArgsBuilderBuilderArgs;
 
-        await MiddlewareRunner.runRequestMiddlewares(appInstance, controller, route, argsBuilderBuilderArgs);
+        await MiddlewareRunner.runGlobalMiddlewares(appInstance.__globalMiddlewares, argsBuilderBuilderArgs, GlobalMiddlewareType.beforeRequestMiddlewares);
+        await MiddlewareRunner.runRouteMiddlewares(appInstance.__middlewares, controller, route, argsBuilderBuilderArgs, MiddlewareType.request);
+        await MiddlewareRunner.runGlobalMiddlewares(appInstance.__globalMiddlewares, argsBuilderBuilderArgs, GlobalMiddlewareType.afterRequestMiddlewares);
         
         const args = ArgsBuilder.build(argsBuilderBuilderArgs);
         const handlerResult = await route.handler(...args);
         
         flowResponse.setData(handlerResult);
-
-        await MiddlewareRunner.runResponseMiddlewares(appInstance, controller, route, argsBuilderBuilderArgs);
+        
+        await MiddlewareRunner.runGlobalMiddlewares(appInstance.__globalMiddlewares, argsBuilderBuilderArgs, GlobalMiddlewareType.beforeResposeMiddlewares);
+        await MiddlewareRunner.runRouteMiddlewares(appInstance.__middlewares, controller, route, argsBuilderBuilderArgs, MiddlewareType.response);
+        await MiddlewareRunner.runGlobalMiddlewares(appInstance.__globalMiddlewares, argsBuilderBuilderArgs, GlobalMiddlewareType.afterResposeMiddlewares);
 
         Flowpress.resolveResponse(flowResponse, res);
       } catch (e) {

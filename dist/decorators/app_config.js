@@ -17,12 +17,13 @@ function AppConfig(data) {
         // Pega o construtor original guardado caso houver
         const originalConstructor = Reflect.getMetadata(original_constructor_1.ORIGINAL_CONSTRUCTOR_METADATA_KEY, constructor) ?? constructor;
         let dataSource;
-        const [databaseConfigConstructor, modulesConstructor, controllersConstructor, middlawaresConstructor, injectablesConstructor] = [
+        const [databaseConfigConstructor, modulesConstructor, controllersConstructor, middlewaresConstructor, injectablesConstructor, globalMiddlewaresConstructor,] = [
             data.databaseConfig,
             data.modules ?? [],
             data.controllers ?? [],
-            data.middlawares ?? [],
-            data.injectables ?? []
+            data.middlewares ?? [],
+            data.injectables ?? [],
+            data.globalMiddlewares ?? [],
         ];
         // Chama uma função para instanciar e retornar uma lista de instancias dos construtores usados
         const controllersInstance = app_declaration_service_1.AppDeclarationService.instanceImplicitImplements(controllersConstructor, (controllerConstructor) => {
@@ -31,10 +32,16 @@ function AppConfig(data) {
                 throw new Error(`A classe ${controllerConstructor.name} não tem metadados de controlador`);
         });
         // Chama uma função para instanciar e retornar uma lista de instancias dos construtores usados
-        const middlawaresInstance = app_declaration_service_1.AppDeclarationService.instanceImplicitImplements(middlawaresConstructor, (middlawareConstructor) => {
+        const middlewaresInstance = app_declaration_service_1.AppDeclarationService.instanceImplicitImplements(middlewaresConstructor, (middlewareConstructor) => {
             // Valida se a classe é um controllador
-            if (!Reflect.getMetadata(middelware_1.MIDDLEWARE_METADATA_KEY, middlawareConstructor))
-                throw new Error(`A classe ${middlawareConstructor.name} não tem metadados de middlaware`);
+            if (!Reflect.getMetadata(middelware_1.MIDDLEWARE_METADATA_KEY, middlewareConstructor))
+                throw new Error(`A classe ${middlewareConstructor.name} não tem metadados de middleware`);
+        });
+        // Chama uma função para instanciar e retornar uma lista de instancias dos construtores usados
+        const globalMiddlewaresInstance = app_declaration_service_1.AppDeclarationService.instanceImplicitImplements(globalMiddlewaresConstructor, (middlewareConstructor) => {
+            // Valida se a classe é um controllador
+            if (!Reflect.getMetadata(middelware_1.MIDDLEWARE_METADATA_KEY, middlewareConstructor))
+                throw new Error(`A classe ${middlewareConstructor.name} não tem metadados de middleware`);
         });
         // Chama uma função para instanciar e retornar uma lista de instancias dos construtores usados
         const injectablesInstance = app_declaration_service_1.AppDeclarationService.instanceImplicitImplements(injectablesConstructor, (injectableConstructor) => {
@@ -87,8 +94,9 @@ function AppConfig(data) {
             __dataSource;
             __onLoaded;
             __originalConstructor = constructor;
-            __middlawares = middlawaresInstance;
             __controllers = controllersInstance;
+            __middlewares = middlewaresInstance;
+            __globalMiddlewares = globalMiddlewaresInstance;
             constructor(...args) {
                 super(...args);
                 this.__port = data.port(this);

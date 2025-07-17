@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MiddlewaresDataContainer = exports.MiddlewareData = exports.FlowResponse = exports.FlowRequest = exports.Flowpress = exports.Route = exports.HttpException = exports.MiddlewareType = exports.HttpStatus = exports.HttpMethod = exports.DataSourceConfig = exports.Module = exports.UseMiddleware = exports.MiddlewaresData = exports.Res = exports.Req = exports.Query = exports.Headers = exports.Header = exports.Body = exports.Middelware = exports.Method = exports.InjectionUser = exports.Injectable = exports.Inject = exports.InjectRepository = exports.Controller = exports.envApplyProperties = exports.EnvProperty = exports.AppConfig = void 0;
+exports.MiddlewaresDataContainer = exports.MiddlewareData = exports.FlowResponse = exports.FlowRequest = exports.Flowpress = exports.Route = exports.HttpException = exports.GlobalMiddlewareType = exports.MiddlewareType = exports.HttpStatus = exports.HttpMethod = exports.DataSourceConfig = exports.Module = exports.UseMiddleware = exports.MiddlewaresData = exports.Res = exports.Req = exports.Query = exports.Headers = exports.Header = exports.Body = exports.Middleware = exports.Method = exports.InjectionUser = exports.Injectable = exports.Inject = exports.InjectRepository = exports.Controller = exports.envApplyProperties = exports.EnvProperty = exports.AppConfig = void 0;
 // Exportando decoradores
 var app_config_1 = require("./decorators/app_config");
 Object.defineProperty(exports, "AppConfig", { enumerable: true, get: function () { return app_config_1.AppConfig; } });
@@ -19,7 +19,7 @@ Object.defineProperty(exports, "InjectionUser", { enumerable: true, get: functio
 var method_1 = require("./decorators/method");
 Object.defineProperty(exports, "Method", { enumerable: true, get: function () { return method_1.Method; } });
 var middleware_1 = require("./decorators/middleware");
-Object.defineProperty(exports, "Middelware", { enumerable: true, get: function () { return middleware_1.Middelware; } });
+Object.defineProperty(exports, "Middleware", { enumerable: true, get: function () { return middleware_1.Middleware; } });
 var request_params_1 = require("./decorators/request_params");
 Object.defineProperty(exports, "Body", { enumerable: true, get: function () { return request_params_1.Body; } });
 Object.defineProperty(exports, "Header", { enumerable: true, get: function () { return request_params_1.Header; } });
@@ -41,6 +41,8 @@ var http_status_1 = require("./enums/http_status");
 Object.defineProperty(exports, "HttpStatus", { enumerable: true, get: function () { return http_status_1.HttpStatus; } });
 var middleware_type_1 = require("./enums/middleware_type");
 Object.defineProperty(exports, "MiddlewareType", { enumerable: true, get: function () { return middleware_type_1.MiddlewareType; } });
+var global_middlaware_type_1 = require("./enums/global_middlaware_type");
+Object.defineProperty(exports, "GlobalMiddlewareType", { enumerable: true, get: function () { return global_middlaware_type_1.GlobalMiddlewareType; } });
 // Exportando exceções
 var http_exception_1 = require("./exceptions/http_exception");
 Object.defineProperty(exports, "HttpException", { enumerable: true, get: function () { return http_exception_1.HttpException; } });
