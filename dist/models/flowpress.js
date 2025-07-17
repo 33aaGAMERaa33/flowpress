@@ -73,7 +73,7 @@ class Flowpress {
     }
     static async parseRequestBody(req) {
         return new Promise((resolve, reject) => {
-            let body = undefined;
+            let body = "";
             req.on('data', chunk => {
                 body += chunk;
             });
@@ -85,7 +85,7 @@ class Flowpress {
                         resolve(undefined);
                 }
                 catch (err) {
-                    reject(err);
+                    resolve(body);
                 }
             });
             req.on('error', err => {
