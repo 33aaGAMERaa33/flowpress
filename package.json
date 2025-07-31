@@ -1,0 +1,30 @@
+{
+  "name": "flowpress",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "module",
+  "scripts": {
+    "dev": "npx ts-node-dev --clear --respawn --transpile-only src/test/index.ts",
+    "start": "node dist/index.js",
+    "test": "node dist/test/index.js",
+    "build": "tsc"
+  },
+  "keywords": [
+    "framework",
+    "typescript"
+  ],
+  "author": "Luan Gabriel da Silva",
+  "license": "MIT",
+  "description": "Microframework minimalista para APIs",
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "ts-node-dev": "^2.0.0"
+  },
+  "peerDependencies": {
+    "dotenv": "^17.0.1",
+    "mysql": "^2.18.1",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.25"
+  }
+}

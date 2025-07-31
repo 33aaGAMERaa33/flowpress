@@ -1,0 +1,11 @@
+src/
+.vscode/
+
+dist/test/
+
+.env
+
+.git/
+.gitignore
+
+node_modules/

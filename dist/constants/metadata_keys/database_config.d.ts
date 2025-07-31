@@ -1,0 +1,1 @@
+export declare const DATABASE_CONFIG_METADATA_KEY = "database-config";

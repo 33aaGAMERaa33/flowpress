@@ -1,0 +1,1 @@
+export const INSTANCES_PENDING_INJECTIONS = "instances-pending-injections";

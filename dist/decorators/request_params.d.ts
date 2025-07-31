@@ -1,0 +1,10 @@
+import { RequestParam } from "../enums/request_param";
+export type MethodsRequestParamsDefine = Record<string | symbol, RequestParamBinding[]>;
+export type RequestParamBinding = [RequestParam, number, any];
+export declare const Body: (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
+export declare const Query: (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
+export declare const Req: (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
+export declare const Res: (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
+export declare const Headers: (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
+export declare const Header: (header: string) => (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
+export declare const MiddlewaresData: (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
